@@ -10,17 +10,19 @@ def cli(ctx):
 
 
 @cli.command()
-@click.argument('path', nargs=-1, type=click.Path(exists=True))
-def add(path):
+@click.argument('paths', nargs=-1, type=click.Path(exists=True))
+def add(paths):
     gim = GitManager()
-    gim.register(path)
+    for path in paths:
+        gim.register(path)
 
 
 @cli.command()
-@click.argument('path', nargs=-1, type=click.Path(exists=True))
-def remove(path):
+@click.argument('paths', nargs=-1, type=click.Path(exists=True))
+def remove(paths):
     gim = GitManager()
-    gim.deregister(path)
+    for path in paths:
+        gim.register(path)
 
 
 @cli.command()

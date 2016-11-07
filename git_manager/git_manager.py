@@ -28,6 +28,9 @@ class GitManager(object):
     def list_all(self):
         print '\n'.join([row.name for row in self.db.query(Repo, Repo.name)])
 
+    def get_longest_name_length(self):
+        return sorted([len(row.name) for row in self.db.query(Repo, Repo.name)])[-1]
+
     def register(self, dir):
         path = self.get_path(dir)
         name = self.get_name(path)
@@ -59,7 +62,7 @@ class GitManager(object):
         output = ['GIT STATUS']
         for index, repo in enumerate(self.db.query(Repo)):
             path = repo.path
-            name = repo.name.ljust(20)
+            name = repo.name.ljust(self.get_longest_name_length() + 10)
             r = git.Repo(path)
             try:
                 branch = r.active_branch.name.ljust(20)

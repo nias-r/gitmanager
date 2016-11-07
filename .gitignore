@@ -91,4 +91,5 @@ ENV/
 .ropeproject
 
 *iml
+.idea/
 

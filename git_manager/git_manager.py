@@ -71,26 +71,16 @@ class GitManager(object):
                 branch = 'unknown'.ljust(20)
 
             diffs = len(r.index.diff(None))
-            text = '{cname}{arrow_one}{cbranch}{arrow_two}{status}'.format(
+            text = '{cname}{cbranch}{status}'.format(
                 cname=colored(
                     name,
-                    color='grey',
-                    on_color=ON_COLOURS[index % NUM_COLOURS]
+                    color=COLOURS[index % NUM_COLOURS]
                 ),
-
-                arrow_one=colored(
-                    ' ',
-                    color=COLOURS[index % NUM_COLOURS],
-                    on_color=ON_COLOURS[(index + 1) % NUM_COLOURS]),
 
                 cbranch=colored(
                     branch,
-                    color='grey',
-                    on_color=ON_COLOURS[(index + 1) % NUM_COLOURS]),
-
-                arrow_two=colored(
-                    ' ',
-                    color=COLOURS[(index + 1) % NUM_COLOURS]),
+                    color=COLOURS[index % NUM_COLOURS],
+                ),
 
                 status='{pips}'.format(pips='⦿' * diffs)
             )

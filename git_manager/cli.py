@@ -22,7 +22,7 @@ def add(paths):
 def remove(paths):
     gim = GitManager()
     for path in paths:
-        gim.register(path)
+        gim.deregister(path)
 
 
 @cli.command()

@@ -4,7 +4,7 @@
 import os
 from sqlalchemy.orm import sessionmaker
 from termcolor import colored, cprint
-import envoy
+import delegator
 import git
 from .models import engine, Repo
 
@@ -91,19 +91,23 @@ class GitManager(object):
         print '\n'
 
     def pull_all(self):
-        for index, repo in enumerate(self.db.query(Repo)):
+        procs = []
+        for repo in self.db.query(Repo):
             path = repo.path
-            name = repo.name
-            r = envoy.run('git -C {0} pull'.format(path))
+            procs.append((delegator.run('git -C {0} pull'.format(path), block=False), repo.name))
+        for index, (r, name) in enumerate(procs):
+            r.block()
             cprint(name, COLOURS[index % NUM_COLOURS])
-            print(r.std_out)
+            print(r.out)
         print('')
 
     def list_branches(self):
-        for index, repo in enumerate(self.db.query(Repo)):
+        procs = []
+        for repo in self.db.query(Repo):
             path = repo.path
-            name = repo.name
-            r = envoy.run('git -C {0} branch'.format(path))
+            procs.append((delegator.run('git -C {0} branch'.format(path), block=False), repo.name))
+        for index, (r, name) in enumerate(procs):
+            r.block()
             cprint(name, COLOURS[index % NUM_COLOURS])
-            print(r.std_out)
+            print(r.out)
         print('')

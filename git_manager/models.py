@@ -9,9 +9,8 @@ Base = declarative_base()
 class Repo(Base):
     __tablename__ = 'repositories'
 
-    id = Column(Integer, primary_key=True)
     name = Column(String)
-    path = Column(String)
+    path = Column(String, primary_key=True)
 
     def __repr__(self):
         return "<Repo(name={name}, path={path})>".format(name=self.name, path=self.path)

@@ -4,15 +4,12 @@
 import os
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import FlushError
-from termcolor import colored, cprint
 import delegator
 import git
 from models import engine, Repo
 from multiprocessing import Process, Queue
-
-COLOURS = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan']
-ON_COLOURS = ['on_{colour}'.format(colour=colour) for colour in COLOURS]
-NUM_COLOURS = len(COLOURS)
+from lolcat import LolCat
+import random
 
 
 class GitManager(object):
@@ -73,6 +70,23 @@ class GitManager(object):
                 break
         return sorted(results)
 
+    @staticmethod
+    def _print(s):
+        l = LolCat()
+
+        class Options:
+            freq = 0.1
+            spread = 3.0
+            animate = False
+            seed = 0
+            duration = 12
+            speed = 20
+            force = False
+            os = random.randint(0, 256)
+            charset_py2 = 'utf-8'
+
+        l.cat(s, Options)
+
     def _get_repo(self, repo_path):
         return self.repos.filter(Repo.path == repo_path)
 
@@ -102,33 +116,35 @@ class GitManager(object):
 
     def _call_function(self, f, *args, **kwargs):
         processes = [(f(repo.path, *args, **kwargs), repo.name) for repo in self.repos]
-
+        output = []
         for index, (p, name) in enumerate(processes):
             p.block()
-            cprint(name, COLOURS[index % NUM_COLOURS])
-            print(p.out)
+            output.append(name)
+            output.append(p.out)
+            output.append('')
+        self._print(output)
 
     def register(self, directory):
         repo_path, name = self._get_path_and_name(directory)
 
         if not os.path.exists(os.path.join(directory, '.git')):
-            cprint('{repo_path} is not a git repository!'.format(repo_path=repo_path), 'red')
+            self._print(['{repo_path} is not a git repository!'.format(repo_path=repo_path)])
             return
 
         if self._add_repo(repo_path, name):
-            cprint('Added {name} ({repo_path}) to Git Manager'.format(name=name, repo_path=repo_path), 'green')
+            self._print(['Added {name} ({repo_path}) to Git Manager'.format(name=name, repo_path=repo_path)])
         else:
-            cprint(('{name} ({repo_path}) has not been added '
-                    'because it is already registered!').format(name=name, repo_path=repo_path), 'green')
+            self._print([('{name} ({repo_path}) has not been added '
+                          'because it is already registered!').format(name=name, repo_path=repo_path)])
 
     def deregister(self, directory):
         repo_path, name = self._get_path_and_name(directory)
 
         if self._delete_repo(repo_path):
-            cprint('Removed {name} ({repo_path}) from Git Manager'.format(name=name, repo_path=repo_path), 'red')
+            self._print(['Removed {name} ({repo_path}) from Git Manager'.format(name=name, repo_path=repo_path)])
         else:
-            cprint(('{name} ({repo_path}) has not been removed '
-                    'because it is not registered!').format(name=name, repo_path=repo_path), 'red')
+            self._print([('{name} ({repo_path}) has not been removed '
+                          'because it is not registered!').format(name=name, repo_path=repo_path)])
 
     def status_check(self):
         num_repos = self.num_repos
@@ -142,8 +158,7 @@ class GitManager(object):
         for process in processes:
             process.join()
 
-        output = self._get_results(output_queue, num_repos)
-        print '\n'.join(colored(out, COLOURS[index % NUM_COLOURS]) for index, out in enumerate(output))
+        self._print(self._get_results(output_queue, num_repos))
 
     def pull_all(self):
         self._call_function(self._pull_repo)

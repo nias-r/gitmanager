@@ -93,12 +93,12 @@ class GitManager(object):
         self._longest_name = 0
         return result
 
-    def _format_branch(self, repo, output_queue, index):
+    def _format_branch(self, repo, output_queue):
         branch, diffs = self._get_branch(repo.path)
         text = '{name}{branch}{status}'.format(name=repo.name.ljust(self.longest_name + 10),
                                                branch=branch.ljust(20),
                                                status='⦿' * diffs)
-        output_queue.put(colored(text, COLOURS[index % NUM_COLOURS]))
+        output_queue.put(text)
 
     def _call_function(self, f, *args, **kwargs):
         processes = [(f(repo.path, *args, **kwargs), repo.name) for repo in self.repos]
@@ -134,8 +134,8 @@ class GitManager(object):
         num_repos = self.num_repos
         output_queue = Queue()
 
-        processes = [Process(target=self._format_branch, kwargs=dict(repo=repo, output_queue=output_queue, index=index))
-                     for index, repo in enumerate(self.repos)]
+        processes = [Process(target=self._format_branch, kwargs=dict(repo=repo, output_queue=output_queue))
+                     for repo in self.repos]
 
         for process in processes:
             process.start()
@@ -143,7 +143,7 @@ class GitManager(object):
             process.join()
 
         output = self._get_results(output_queue, num_repos)
-        print '\n'.join(output)
+        print '\n'.join(colored(out, COLOURS[index % NUM_COLOURS]) for index, out in enumerate(output))
 
     def pull_all(self):
         self._call_function(self._pull_repo)

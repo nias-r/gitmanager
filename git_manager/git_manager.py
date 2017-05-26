@@ -151,5 +151,5 @@ class GitManager(object):
     def list_branches(self):
         self._call_function(self._list_branches)
 
-    def checkout_mater(self):
+    def checkout_master(self):
         self._call_function(self._checkout_branch, branch='master')

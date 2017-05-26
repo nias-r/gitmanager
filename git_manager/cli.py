@@ -43,5 +43,11 @@ def pull():
     gim.pull_all()
 
 
+@cli.command()
+def master():
+    gim = GitManager()
+    gim.checkout_master()
+
+
 if __name__ == '__main__':
     cli()

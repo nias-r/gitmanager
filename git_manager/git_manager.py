@@ -65,13 +65,13 @@ class GitManager(object):
 
     @staticmethod
     def _get_results(output_queue, num_repos):
-        results = {}
+        results = []
         while True:
-            index, string = output_queue.get()
-            results[index] = string
-            if len(results.keys()) == num_repos:
+            string = output_queue.get()
+            results.append(string)
+            if len(results) == num_repos:
                 break
-        return [results[index] for index in xrange(num_repos)]
+        return sorted(results)
 
     def _get_repo(self, repo_path):
         return self.repos.filter(Repo.path == repo_path)
@@ -98,7 +98,7 @@ class GitManager(object):
         text = '{name}{branch}{status}'.format(name=repo.name.ljust(self.longest_name + 10),
                                                branch=branch.ljust(20),
                                                status='⦿' * diffs)
-        output_queue.put((index, colored(text, COLOURS[index % NUM_COLOURS])))
+        output_queue.put(colored(text, COLOURS[index % NUM_COLOURS]))
 
     def _call_function(self, f, *args, **kwargs):
         processes = [(f(repo.path, *args, **kwargs), repo.name) for repo in self.repos]

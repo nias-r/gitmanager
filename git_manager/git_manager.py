@@ -18,17 +18,11 @@ NUM_COLOURS = len(COLOURS)
 class GitManager(object):
     def __init__(self):
         self.db = sessionmaker(bind=engine)()
-        self._longest_name = 0
+        self.longest_name = max(len(repos.name) for repos in self.repos)
 
     @property
     def repos(self):
         return self.db.query(Repo)
-
-    @property
-    def longest_name(self):
-        if self._longest_name == 0:
-            self._longest_name = max(len(repos.name) for repos in self.repos)
-        return self._longest_name
 
     @property
     def num_repos(self):
@@ -140,7 +134,7 @@ class GitManager(object):
         num_repos = self.num_repos
         output_queue = Queue()
 
-        processes = [Process(self._format_branch, kwargs=dict(repo=repo, output_queue=output_queue, index=index))
+        processes = [Process(target=self._format_branch, kwargs=dict(repo=repo, output_queue=output_queue, index=index))
                      for index, repo in enumerate(self.repos)]
 
         for process in processes:

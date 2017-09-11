@@ -1,5 +1,5 @@
 import click
-from git_manager import GitManager
+from .git_manager import GitManager
 
 
 @click.group(invoke_without_command=True)

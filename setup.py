@@ -14,7 +14,7 @@ setup(
     name='gitmanager',
     description='A tool for managing multiple git projects.',
     long_description=read('README.rst'),
-    version='0.1',
+    version='0.1.1',
     packages=['git_manager'],
     install_requires=[
         'Click',

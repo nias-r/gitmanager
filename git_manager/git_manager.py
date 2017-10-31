@@ -35,7 +35,8 @@ class GitManager(object):
 
     @classmethod
     def _get_path_and_name(cls, p):
-        return cls._get_path(p), cls._get_name(p)
+        path = cls._get_path(p)
+        return path, cls._get_name(path)
 
     @staticmethod
     def _get_branch(repo_path):

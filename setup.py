@@ -12,7 +12,7 @@ setup(
     install_requires=[
         'Click',
         'GitPython',
-        'delegator',
+        'delegator.py',
         'sqlalchemy',
         'termcolor'
     ],

@@ -6,16 +6,16 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import FlushError
 import delegator
 import git
-from models import engine, Repo
+from .models import engine, Repo
 from multiprocessing import Process, Queue
-from lolcat import LolCat
+from .lolcat import LolCat
 import random
 
 
 class GitManager(object):
     def __init__(self):
         self.db = sessionmaker(bind=engine)()
-        self.longest_name = max(len(repos.name) for repos in self.repos)
+        self.longest_name = max([0] + [len(repos.name) for repos in self.repos])
 
     @property
     def repos(self):
@@ -35,7 +35,8 @@ class GitManager(object):
 
     @classmethod
     def _get_path_and_name(cls, p):
-        return cls._get_path(p), cls._get_name(p)
+        path = cls._get_path(p)
+        return path, cls._get_name(path)
 
     @staticmethod
     def _get_branch(repo_path):

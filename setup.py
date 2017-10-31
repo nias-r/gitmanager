@@ -15,7 +15,7 @@ setup(
     description='A tool for managing multiple git projects.',
     long_description=read('README.rst'),
     version='0.1',
-    py_modules=['git_manager'],
+    packages=['git_manager'],
     install_requires=[
         'Click',
         'GitPython',

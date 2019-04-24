@@ -45,7 +45,7 @@ class GitManager(object):
         r = git.Repo(repo_path)
         try:
             branch = r.active_branch.name
-        except (ValueError, TypeError):
+        except TypeError:
             branch = 'unknown'
 
         diffs = len(r.index.diff(None))

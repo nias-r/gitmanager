@@ -36,14 +36,6 @@ def rm(paths):
 
 
 @cli.command()
-@click.argument('paths', nargs=-1, type=click.Path(exists=True))
-def remove(paths):
-    gim = GitManager()
-    for path in paths:
-        gim.deregister(path)
-
-
-@cli.command()
 def status():
     gim = GitManager()
     gim.status_check()

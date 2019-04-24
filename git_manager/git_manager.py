@@ -2,14 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import os
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.exc import FlushError
+import random
+from multiprocessing import Process, Queue
+
 import delegator
 import git
-from .models import engine, Repo
-from multiprocessing import Process, Queue
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import FlushError
+
 from .lolcat import LolCat
-import random
+from .models import engine, Repo
 
 
 class GitManager(object):

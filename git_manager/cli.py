@@ -17,6 +17,24 @@ def add(paths):
         gim.register(path)
 
 
+def _remove(paths):
+    gim = GitManager()
+    for path in paths:
+        gim.deregister(path)
+
+
+@cli.command()
+@click.argument('paths', nargs=-1, type=click.Path(exists=True))
+def remove(paths):
+    _remove(paths)
+
+
+@cli.command()
+@click.argument('paths', nargs=-1, type=click.Path(exists=True))
+def rm(paths):
+    _remove(paths)
+
+
 @cli.command()
 @click.argument('paths', nargs=-1, type=click.Path(exists=True))
 def remove(paths):

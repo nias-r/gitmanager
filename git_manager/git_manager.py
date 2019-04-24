@@ -123,7 +123,7 @@ class GitManager(object):
             output.append(name)
             output.append(p.out)
             output.append('')
-        print(output)
+        print('\n'.join(output))
 
     def register(self, directory):
         repo_path, name = self._get_path_and_name(directory)

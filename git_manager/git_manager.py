@@ -115,7 +115,7 @@ class GitManager(object):
                                                status='⦿' * diffs)
         output_queue.put(text)
 
-    def _call_function(self, f, lol=True, *args, **kwargs):
+    def _call_function(self, f, *args, **kwargs):
         processes = [(f(repo.path, *args, **kwargs), repo.name) for repo in self.repos]
         output = []
         for index, (p, name) in enumerate(processes):
@@ -123,8 +123,7 @@ class GitManager(object):
             output.append(name)
             output.append(p.out)
             output.append('')
-        print_fn = self._print if lol else print
-        print_fn(output)
+        print(output)
 
     def register(self, directory):
         repo_path, name = self._get_path_and_name(directory)
@@ -163,10 +162,10 @@ class GitManager(object):
         self._print(self._get_results(output_queue, num_repos))
 
     def pull_all(self):
-        self._call_function(self._pull_repo, lol=False)
+        self._call_function(self._pull_repo)
 
     def list_branches(self):
         self._call_function(self._list_branches)
 
     def checkout_master(self):
-        self._call_function(self._checkout_branch, lol=False, branch='master')
+        self._call_function(self._checkout_branch, branch='master')
